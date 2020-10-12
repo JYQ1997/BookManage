@@ -17,7 +17,7 @@
     <meta charset="utf-8">
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-    <title>马不停蹄</title>
+    <title>马不停蹄图书管理系统</title>
     <meta name="keywords" content="马不停蹄图书管理系统">
     <meta name="description" content="马不停蹄图书管理系统">
     <link href="<%=basePath%>static/css/bootstrap.min.css" rel="stylesheet">
