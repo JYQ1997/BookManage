@@ -58,14 +58,22 @@
             </div>
         </div>
         <div class="col-sm-5">
-            <form id="signupForm">
+            <form id="signupForm" action="user/login">
                 <h3 class="text-center">用户登录</h3>
                 <p class="m-t-md text-center">欢迎登录马不停蹄图书管理系统</p>
                 <input type="text" name="username" class="form-control uname"
-                       th:value="${username}"/>
+                       value="${username}"/>
                 <input type="password" name="password"
-                       class="form-control pword m-b" th:value="${password}"/>
+                       class="form-control pword m-b" value="${password}"/>
                 <a id="login" class="btn btn-login btn-block">登录</a>
+                <%
+                if (session.getAttribute("error")!=null){
+                    %>
+
+                <i class='fa fa-times-circle'>${error}</i>
+                <%
+                }
+                %>
                 <div class="row">
                     <div class="col-xs-6 pull_left">
                         <div class="form-group">
@@ -144,7 +152,7 @@
     function login() {
         $.ajax({
             type: "POST",
-            url: ctx + "login",
+            url: "user/login",
             data: $('#signupForm').serialize(),
             success: function (r) {
                 if (r.code == 0) {
@@ -190,7 +198,7 @@
 
     //获取验证码
     function getVerify(obj) {
-        obj.src = "/getVerify?" + Math.random();
+        obj.src = "user/getCode?" + Math.random();
         console.log(obj)
     }
 </script>

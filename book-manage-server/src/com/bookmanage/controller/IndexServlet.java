@@ -11,18 +11,19 @@ import java.io.IOException;
  * @Date 2020/10/12 15:56
  * @Version 1.0
  */
-public class IndexController extends HttpServlet {
+public class IndexServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //super.doGet(req, resp);
         System.out.println(req.getContextPath());
-        resp.sendRedirect(req.getContextPath()+"/jspPage/login.jsp");
+        resp.sendRedirect(req.getContextPath()+"/jspPage/index.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        super.doPost(req, resp);
-        System.out.println("post");
+        //super.doPost(req, resp);
+        resp.sendRedirect(req.getContextPath()+"/jspPage/my.jsp");
+        //System.out.println("post");
     }
 }
