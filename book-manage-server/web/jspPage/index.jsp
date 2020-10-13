@@ -37,16 +37,15 @@
                     <div>
                         <span><img alt="image" class="img-circle" height="60" width="60" src="${picUrl}"/></span>
                         <h3 class="" style="color: #ffffff">
-                            </i>后台管理系统
+                            </i>马不停蹄图书管理系统
                         </h3>
                     </div>
                     <div class="dropdown profile-element hidden">
 
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear">
-                            <span class="block m-t-xs"><strong class="font-bold"
-                                                               text="${username}">admin</strong></span>
-                            <span class="text-muted text-xs block">超级管理员<b class="caret"></b></span>
+                            <span class="block m-t-xs"><strong class="font-bold">${username}</strong></span>
+                            <span class="text-muted text-xs block">${role}<b class="caret"></b></span>
                              </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
