@@ -72,7 +72,6 @@ public class BaseDao<E> implements Serializable {
         try {
             conn = DBUtil.getConnection();
             st = conn.prepareStatement(sql);
-            //setParameters(st, parameters);
             setPstm(st,object);
             System.out.println(st.toString());
             rs = st.executeQuery();
@@ -88,6 +87,26 @@ public class BaseDao<E> implements Serializable {
             DBUtil.close(conn,st,rs);
         }
         return list;
+    }
+
+    public int updateByDto(String sql, Object object){
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        int rows = 0;
+
+        try {
+            conn = DBUtil.getConnection();
+            st = conn.prepareStatement(sql);
+            setPstm(st,object);
+            System.out.println(st.toString());
+            rows = st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn,st,rs);
+        }
+        return rows;
     }
 
     /* 把得到的一列数据存入到一个对象中

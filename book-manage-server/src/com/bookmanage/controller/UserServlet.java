@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bookmanage.dto.UserDto;
 import com.bookmanage.response.ResponseMsg;
 import com.bookmanage.service.UserService;
+import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
@@ -27,7 +28,7 @@ import java.util.Random;
  */
 public class UserServlet extends HttpServlet {
 
-
+    private static final Logger log=Logger.getLogger(UserServlet.class);
     private static final char[] codeSequence = {'A', '1', 'B', 'C', '2', 'D', '3', 'E', '4', 'F', '5', 'G', '6', 'H', '7', 'I',
             '8',
             'J',
@@ -61,27 +62,73 @@ public class UserServlet extends HttpServlet {
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         UserDto userDto = new UserDto();
         Map<String, Object> msg = new HashMap<>();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        ResponseMsg responseMsg=new ResponseMsg();
         if (!checkAuthCode(request.getParameter("verify"), request)) {
-            msg.put("error", "校验码不匹配");
+            responseMsg.setCode(500);
+            responseMsg.setMsg("校验码不匹配");
         } else if (request.getParameter("username") == null || request.getParameter("password") == null) {
-            msg.put("error", "用户名或密码不正确");
+            responseMsg.setCode(500);
+            responseMsg.setMsg("用户名或密码不正确");
         } else {
             userDto.setUserName(request.getParameter("username"));
             userDto.setPassword(request.getParameter("password"));
             UserDto user = userService.login(userDto);
             if (user == null) {
-                msg.put("error", "用户信息不存在");
+                responseMsg.setCode(500);
+                responseMsg.setMsg("用户信息不存在");
             } else {
                 HttpSession session = request.getSession();
                 session.setAttribute("user", user);
                 msg.put("user", user);
-                /*RequestDispatcher dispathcer = request.getRequestDispatcher("/index");
-                dispathcer.forward(request,response);*/
+                responseMsg.setData((HashMap<String, Object>) msg);
             }
         }
-        response.setCharacterEncoding("utf-8");
-        response.setContentType("application/json; charset=utf-8");
-        response.getWriter().write(new ResponseMsg((HashMap<String, Object>) msg).toString());
+        response.getWriter().write(responseMsg.toString());
+    }
+
+    public void personal(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        log.info(request.getContextPath()+"/jspPage/user/personal.jsp");
+        HttpSession session=request.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+
+        response.sendRedirect(request.getContextPath()+"/jspPage/user/personal.jsp");
+
+    }
+
+    public void updatePassWord(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session=request.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        Map<String, Object> msg = new HashMap<>();
+        ResponseMsg responseMsg=new ResponseMsg();
+
+        if (request.getParameter("password")==null||request.getParameter("password").equals("")){
+            responseMsg.setCode(500);
+            responseMsg.setMsg("密码缺失");
+        }
+        else if (userDto==null){
+            responseMsg.setCode(500);
+            responseMsg.setMsg("用户信息已过期");
+        }
+        else if (userDto.getPassword().equals(request.getParameter("password"))){
+            responseMsg.setCode(500);
+            responseMsg.setMsg("请输入新密码");
+        }
+        else {
+            userDto.setPassword(request.getParameter("password"));
+            boolean success = userService.updatePassword(userDto);
+            if (success){
+                responseMsg.setCode(200);
+                responseMsg.setMsg("修改成功");
+            }
+            else {
+                responseMsg.setCode(500);
+                responseMsg.setMsg("修改失败");
+            }
+        }
+        response.getWriter().write(responseMsg.toString());
     }
 
     /**

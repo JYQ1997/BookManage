@@ -1,8 +1,10 @@
+<%@ page import="com.bookmanage.dto.UserDto" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+    UserDto user= (UserDto) session.getAttribute("user");
 %>
 <!DOCTYPE html>
 <html>
@@ -40,22 +42,22 @@
                             </i>马不停蹄图书管理系统
                         </h3>
                     </div>
-                    <div class="dropdown profile-element hidden">
+                    <div class="dropdown profile-element">
 
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                             <span class="clear">
-                            <span class="block m-t-xs"><strong class="font-bold">${username}</strong></span>
-                            <span class="text-muted text-xs block">${role}<b class="caret"></b></span>
+                            <span class="block m-t-xs"><strong class="font-bold"><%=user.getUserName()%></strong></span>
+                            <span class="text-muted text-xs block"><%=user.getRoleName()%><b class="caret"></b></span>
                              </span>
                         </a>
                         <ul class="dropdown-menu animated fadeInRight m-t-xs">
-                            <li><a @click="personal" href="#">修改头像</a>
+                            <li><a @click="personal" href="javascript:void(0)">修改头像</a>
                             </li>
-                            <li><a @click="personal" href="#">个人资料</a>
+                            <li><a @click="personal" href="javascript:void(0)">个人资料</a>
                             </li>
-                            <li><a @click="personal" href="#">密码修改</a>
+                            <li><a @click="personal" href="javascript:void(0)">密码修改</a>
                             </li>
-                            <li><a @click="personal" href="#">信箱</a>
+                            <li><a @click="personal" href="javascript:void(0)">信箱</a>
                             </li>
                             <li class="divider"></li>
                             <li><a href="/logout">安全退出</a>
@@ -73,22 +75,62 @@
                     </ul>
                 </li>
                 <li>
-                    <c:forEach items="${menus}" var="menu">
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o" class="${menu.attributes.icon}"></i>
-                            <span class="nav-label" text="${menu.text}">基础信息</span> <span
-                                    class="fa arrow"></span>
-                        </a>
+
+                <a href="#">
+                    <i class="fa fa fa-bar-chart-o"></i>
+                    <span class="nav-label">基础信息</span> <span
+                        class="fa arrow"></span>
+
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">个人资料</a></a><li>
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">密码修改</a></a><li>
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">信箱</a></a><li>
+                    </ul>
+                </a>
+                <a href="#">
+                    <i class="fa fa fa-bar-chart-o"></i>
+                    <span class="nav-label">图书信息</span> <span
+                        class="fa arrow"></span>
+
+                    <ul class="nav nav-second-level">
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">图书列表</a></a><li>
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">我的上传</a></a><li>
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">我的下载</a></a><li>
+                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">浏览记录</a></a><li>
+                    </ul>
+                </a>
+                    <%
+                        if (2==user.getRoleId()){
+                            %>
+
+                    <%
+                        }else {
+                            %>
+
+
+                    <a href="#">
+                        <i class="fa fa fa-bar-chart-o"></i>
+                        <span class="nav-label">图书管理</span> <span
+                            class="fa arrow"></span>
+
                         <ul class="nav nav-second-level">
-                            <li>
-                                <c:forEach items="${menu.children}" var="cmenu">
-                                    <a class="J_menuItem" href="graph_echarts.html"
-                                       text="${cmenu.text}"
-                                       href="${cmenu.attributes.url}">系统管理</a>
-                                </c:forEach>
-                             </li>
+                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">类别管理</a></a><li>
+                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">上架下架</a></a><li>
+                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">权限设置</a></a><li>
                         </ul>
-                    </c:forEach>
+                    </a>
+                    <a href="#">
+                        <i class="fa fa fa-bar-chart-o"></i>
+                        <span class="nav-label">用户管理</span> <span
+                            class="fa arrow"></span>
+
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">启用禁用</a></a><li>
+                        </ul>
+                    </a>
+                    <%
+                        }
+                    %>
                 </li>
             </ul>
         </div>
@@ -292,7 +334,7 @@
     </div>
 </div>
 <!-- 全局js -->
-<%--<script src="<%=basePath%>static/js/jquery.min.js?v=2.1.4"></script>
+<script src="<%=basePath%>static/js/jquery.min.js?v=2.1.4"></script>
 <script src="<%=basePath%>static/js/bootstrap.min.js?v=3.3.6"></script>
 <script src="<%=basePath%>static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
 <script src="<%=basePath%>static/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
@@ -313,6 +355,34 @@
 <script src="<%=basePath%>static/js/plugins/toastr/toastr.min.js"></script>
 <script type="text/javascript">
 
-</script>--%>
+    var wrapper = new Vue({
+        el: '#wrapper',
+        data: {
+            total: '',
+            rows: '',
+        },
+        methods: {
+            notify: function () {
+                $.getJSON('/oa/notify/message', function (r) {
+                    wrapper.total = r.total;
+                    wrapper.rows = r.rows;
+                });
+            },
+            personal: function () {
+                layer.open({
+                    type: 2,
+                    title: '个人设置',
+                    maxmin: true,
+                    shadeClose: false,
+                    area: ['800px', '600px'],
+                    content: '<%=basePath%>user/personal'
+                });
+            }
+        },
+        created: function () {
+            this.notify()
+        }
+    })
+</script>
 </body>
 </html>

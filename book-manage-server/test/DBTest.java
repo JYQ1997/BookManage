@@ -1,4 +1,5 @@
 import com.bookmanage.dto.UserDto;
+import com.bookmanage.service.UserService;
 import com.bookmanage.util.DBUtil;
 
 import java.sql.*;
@@ -11,6 +12,7 @@ import java.util.List;
  */
 public class DBTest {
 
+    private static UserService userService=new UserService();
     public static void main(String[] args) {
         String username = "test";
         String password = "123456";
@@ -31,8 +33,8 @@ public class DBTest {
         userDto.setUserName("test");
         userDto.setPassword("123456");
         String sql = "select * from sys_user where user_name = ? and password = ?";
-        List<UserDto> list = userDto.list(sql, userDto);
-        System.out.println(list.toString());
+        UserDto login = userService.login(userDto);
+        System.out.println(login);
         return false;
     }
 }
