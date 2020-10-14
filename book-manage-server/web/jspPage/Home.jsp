@@ -155,15 +155,21 @@
             url: "user/login",
             data: $('#signupForm').serialize(),
             success: function (r) {
-                if (r.code == 0) {
+                console.log(r);
+                console.log(r.data);
+                console.log(r.code);
+                if (r.code == 200) {
                     var index = layer.load(1, {
                         shade: [0.1, '#fff'] //0.1透明度的白色背景
                     });
-                    parent.location.href = '/index';
+                    parent.location.href = 'index';
                 } else {
                     layer.msg(r.msg);
                 }
             },
+            error: function (s) {
+                console.log(s);
+            }
         });
     }
 

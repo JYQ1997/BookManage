@@ -1,5 +1,7 @@
 package com.bookmanage.dto;
 
+import com.bookmanage.dao.BaseDao;
+
 import java.util.Date;
 
 /**
@@ -7,7 +9,7 @@ import java.util.Date;
  * @Date 2020/10/13 15:34
  * @Version 1.0
  */
-public class UserDto extends BaseDao<UserDto> {
+public class UserDto{
 
     Long userId;
 

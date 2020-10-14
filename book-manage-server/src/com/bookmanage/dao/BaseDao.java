@@ -1,4 +1,4 @@
-package com.bookmanage.dto;
+package com.bookmanage.dao;
 
 import com.bookmanage.util.DBUtil;
 

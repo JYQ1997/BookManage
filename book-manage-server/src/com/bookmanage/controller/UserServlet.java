@@ -1,6 +1,8 @@
 package com.bookmanage.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bookmanage.dto.UserDto;
+import com.bookmanage.response.ResponseMsg;
 import com.bookmanage.service.UserService;
 
 import javax.imageio.ImageIO;
@@ -14,6 +16,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -30,7 +34,7 @@ public class UserServlet extends HttpServlet {
             'K', '9', 'L', '1', 'M', '2', 'N', 'P', '3', 'Q', '4', 'R', 'S', 'T', 'U', 'V', 'W',
             'X', 'Y', 'Z'};
 
-    private static UserService userService=new UserService();
+    private static UserService userService = new UserService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -56,29 +60,28 @@ public class UserServlet extends HttpServlet {
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         UserDto userDto = new UserDto();
-        if (!checkAuthCode(request.getParameter("verify"),request)){
-            request.setAttribute("error","校验码不匹配");
-            request.getRequestDispatcher( "/jspPage/Home.html ").forward(request,response);
-        }
-        else if (request.getParameter("username") == null || request.getParameter("password") == null) {
-            request.setAttribute("error","用户名或密码不正确");
-            request.getRequestDispatcher( "/jspPage/Home.html ").forward(request,response);
-        }
-        else {
+        Map<String, Object> msg = new HashMap<>();
+        if (!checkAuthCode(request.getParameter("verify"), request)) {
+            msg.put("error", "校验码不匹配");
+        } else if (request.getParameter("username") == null || request.getParameter("password") == null) {
+            msg.put("error", "用户名或密码不正确");
+        } else {
             userDto.setUserName(request.getParameter("username"));
             userDto.setPassword(request.getParameter("password"));
-            UserDto user= userService.login(userDto);
-            if (user==null){
-                request.setAttribute("error","用户信息不存在");
-                request.getRequestDispatcher( "/jspPage/Home.html ").forward(request,response);
-            }
-            else {
-                HttpSession session=request.getSession();
-                session.setAttribute("user",user);
-                RequestDispatcher dispathcer = request.getRequestDispatcher("/index");
-                dispathcer.forward(request,response);
+            UserDto user = userService.login(userDto);
+            if (user == null) {
+                msg.put("error", "用户信息不存在");
+            } else {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                msg.put("user", user);
+                /*RequestDispatcher dispathcer = request.getRequestDispatcher("/index");
+                dispathcer.forward(request,response);*/
             }
         }
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        response.getWriter().write(new ResponseMsg((HashMap<String, Object>) msg).toString());
     }
 
     /**
@@ -136,7 +139,7 @@ public class UserServlet extends HttpServlet {
             String rand = String.valueOf(codeSequence[random.nextInt(codeSequence.length)]);
             strCode = strCode + rand;
             g.setColor(new Color(20 + random.nextInt(110), 20 + random.nextInt(110), 20 + random.nextInt(110)));
-            g.drawString(rand, 20 * i+20 , 28);
+            g.drawString(rand, 20 * i + 20, 28);
         }
         //将字符保存到session中用于前端的验证
         session.setAttribute("verify", strCode.toLowerCase());

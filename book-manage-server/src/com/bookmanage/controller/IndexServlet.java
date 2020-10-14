@@ -1,10 +1,20 @@
 package com.bookmanage.controller;
 
+
+
+import com.bookmanage.dao.MenuDao;
+import com.bookmanage.dto.MenuDto;
+import com.bookmanage.dto.UserDto;
+import com.bookmanage.service.MenuService;
+import org.apache.log4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @Author YongQiang
@@ -13,17 +23,28 @@ import java.io.IOException;
  */
 public class IndexServlet extends HttpServlet {
 
+
+    private final static Logger log = Logger.getLogger(IndexServlet.class);
+
+    private final static MenuService menuService=new MenuService();
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //super.doGet(req, resp);
         System.out.println(req.getContextPath());
+        log.info("请求跳转"+req.getContextPath()+"/jspPage/index.jsp");
         resp.sendRedirect(req.getContextPath()+"/jspPage/index.jsp");
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //super.doPost(req, resp);
-        resp.sendRedirect(req.getContextPath()+"/jspPage/my.jsp");
-        //System.out.println("post");
+
+        HttpSession session=req.getSession();
+        UserDto userDto=new UserDto();
+        userDto.setUserName((String) session.getAttribute("usernname"));
+        userDto.setPassword((String) session.getAttribute("password"));
+        List<MenuDto> menuByUser = menuService.getMenuByUser(userDto);
+        req.getRequestDispatcher(req.getContextPath()+"/jspPage/index.jsp").forward(req,resp);
     }
 }
