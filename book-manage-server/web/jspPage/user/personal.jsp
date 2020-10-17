@@ -52,7 +52,7 @@
                                     <span>姓名:</span>
                                 </div>
                                 <div class="gg-formDetail">
-                                    <input type="text" class="form-control" id="userName" name="username"
+                                    <input type="text" class="form-control" id="userName" name="name"
                                            value="${user.name}"  placeholder="请输入姓名" />
                                 </div>
                             </div>
@@ -64,10 +64,10 @@
                                 <div class="gg-formDetail">
                                     <div class="radio i-checks">
                                         <label class="radio-inline">
-                                            <input type="radio" name="sex" value="1" th:text="男" />
+                                            <input type="radio" name="sex" value="1" <c:if test="${user.sex == 1}">checked</c:if> />男
                                         </label>
                                         <label class="radio-inline">
-                                            <input type="radio" name="sex" value="2" th:text="女"/>
+                                            <input type="radio" name="sex" value="2" <c:if test="${user.sex == 2}">checked</c:if> />女
                                         </label>
                                     </div>
                                 </div>
@@ -245,7 +245,6 @@
 <script src="<%=basePath%>static/js/plugins/validate/jquery.validate.extend.js"></script>
 <script src="<%=basePath%>static/js/plugins/validate/messages_zh.min.js"></script>
 <script type="text/javascript">
-    var prefix = "/sys/user"
     $(function () {
         laydate({
             elem : '#birth'
@@ -255,13 +254,11 @@
      * 基本信息提交
      */
     $("#base_save").click(function () {
-        var hobbyStr = getHobbyStr();
-        $("#hobby").val(hobbyStr);
         if($("#basicInfoForm").valid()){
             $.ajax({
                 cache : true,
                 type : "POST",
-                url :"/sys/user/updatePeronal",
+                url :"<%=basePath%>user/updatePeronal",
                 data : $('#basicInfoForm').serialize(),
                 async : false,
                 error : function(request) {
@@ -283,32 +280,29 @@
             $.ajax({
                 cache : true,
                 type : "POST",
-                url :"/sys/user/resetPwd",
+                url :"<%=basePath%>user/updatePassWord",
                 data : $('#modifyPwd').serialize(),
                 async : false,
                 error : function(request) {
-                    parent.laryer.alert("Connection error");
+                    console.log(request);
+                    parent.layer.msg();
+                    parent.layer.alert("Connection error");
                 },
                 success : function(data) {
-                    if (data.code == 0) {
+                    console.log(data);
+                    console.log(data.msg);
+                    if (data.code == 200) {
                         parent.layer.alert("更新密码成功");
+                        console.log(data.msg);
                         $("#photo_info").click();
                     } else {
-                        parent.layer.alert(data.msg)
+                        console.log(data.msg);
+                        parent.layer.alert(data.msg);
                     }
                 }
             });
         }
     });
-    function getHobbyStr(){
-        var hobbyStr ="";
-        $(".hobby").each(function () {
-            if($(this).is(":checked")){
-                hobbyStr+=$(this).val()+";";
-            }
-        });
-        return hobbyStr;
-    }
 
 </script>
 </body>

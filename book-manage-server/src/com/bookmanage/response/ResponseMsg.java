@@ -33,11 +33,18 @@ public class ResponseMsg {
 
     @Override
     public String toString() {
-        return "{" +
+        String str="{" +
                 "\"code\":" + code +
-                ", \"msg\":" + msg +
-                ", \"data=\":" + JSONObject.toJSONString(data) +
-                '}';
+                ", \"msg\":\"" + msg +
+                "\", \"data=\":";
+        if (data==null){
+            str+="{}";
+        }
+        else {
+            str+=JSONObject.toJSONString(data);
+        }
+        str+="}";
+        return str;
     }
 
     public Integer getCode() {

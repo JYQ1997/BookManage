@@ -60,7 +60,7 @@
                             <li><a @click="personal" href="javascript:void(0)">信箱</a>
                             </li>
                             <li class="divider"></li>
-                            <li><a href="/logout">安全退出</a>
+                            <li><a href="<%=basePath%>user/logout">安全退出</a>
                             </li>
                         </ul>
                         <div class="logo-element">BootDo</div>
@@ -216,7 +216,7 @@
                     <li class="J_tabCloseOther"><a>关闭其他选项卡</a></li>
                 </ul>
             </div>
-            <a href="/logout" class="roll-nav roll-right J_tabExit"><i
+            <a href="<%=basePath%>user/logout" class="roll-nav roll-right J_tabExit"><i
                     class="fa fa fa-sign-out"></i> 退出</a>
         </div>
         <div class="row J_mainContent" id="content-main">

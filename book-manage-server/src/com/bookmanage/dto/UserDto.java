@@ -29,7 +29,7 @@ public class UserDto{
 
     Integer status;
 
-    Integer userIdCreate;
+    Long userIdCreate;
 
     Date gmtCreate;
 
@@ -123,11 +123,11 @@ public class UserDto{
         this.status = status;
     }
 
-    public Integer getUserIdCreate() {
+    public Long getUserIdCreate() {
         return userIdCreate;
     }
 
-    public void setUserIdCreate(Integer userIdCreate) {
+    public void setUserIdCreate(Long userIdCreate) {
         this.userIdCreate = userIdCreate;
     }
 

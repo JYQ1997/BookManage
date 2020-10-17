@@ -17,6 +17,8 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -80,6 +82,7 @@ public class UserServlet extends HttpServlet {
                 responseMsg.setMsg("用户信息不存在");
             } else {
                 HttpSession session = request.getSession();
+                user.setPassword(null);//为了安全，session里不存密码
                 session.setAttribute("user", user);
                 msg.put("user", user);
                 responseMsg.setData((HashMap<String, Object>) msg);
@@ -88,6 +91,13 @@ public class UserServlet extends HttpServlet {
         response.getWriter().write(responseMsg.toString());
     }
 
+    /**
+     * 打开personal页面层
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
     public void personal(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
         log.info(request.getContextPath()+"/jspPage/user/personal.jsp");
@@ -98,37 +108,118 @@ public class UserServlet extends HttpServlet {
 
     }
 
+    /**
+     * 修改密码
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     public void updatePassWord(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session=request.getSession();
         UserDto userDto = (UserDto) session.getAttribute("user");
         Map<String, Object> msg = new HashMap<>();
         ResponseMsg responseMsg=new ResponseMsg();
-
-        if (request.getParameter("password")==null||request.getParameter("password").equals("")){
-            responseMsg.setCode(500);
-            responseMsg.setMsg("密码缺失");
-        }
-        else if (userDto==null){
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        if (userDto==null){
+            //如果session已过期，给出提示
             responseMsg.setCode(500);
             responseMsg.setMsg("用户信息已过期");
-        }
-        else if (userDto.getPassword().equals(request.getParameter("password"))){
-            responseMsg.setCode(500);
-            responseMsg.setMsg("请输入新密码");
-        }
-        else {
-            userDto.setPassword(request.getParameter("password"));
-            boolean success = userService.updatePassword(userDto);
-            if (success){
-                responseMsg.setCode(200);
-                responseMsg.setMsg("修改成功");
+        }else {
+            UserDto oldUser = userService.selectById(userDto.getUserId());
+            if(oldUser ==null){
+                responseMsg.setCode(500);
+                responseMsg.setMsg("非法用户信息");
+            }
+            else if (request.getParameter("pwdOld")==null||request.getParameter("pwdOld").equals("")||request.getParameter("pwdNew")==null||request.getParameter("pwdNew").equals("")){
+                responseMsg.setCode(500);
+                responseMsg.setMsg("密码缺失");
+            }
+            else if (!oldUser.getPassword().equals(request.getParameter("pwdOld"))){
+                //如果旧密码不匹配
+                responseMsg.setCode(500);
+                responseMsg.setMsg("旧密码错误");
             }
             else {
-                responseMsg.setCode(500);
-                responseMsg.setMsg("修改失败");
+                UserDto user=new UserDto();
+                user.setUserId(userDto.getUserId());
+                user.setPassword(request.getParameter("pwdNew"));
+                boolean success = userService.updatePassword(user);
+                if (success){
+                    responseMsg.setCode(200);
+                    responseMsg.setMsg("修改成功");
+                }
+                else {
+                    responseMsg.setCode(500);
+                    responseMsg.setMsg("修改失败");
+                }
             }
         }
+
         response.getWriter().write(responseMsg.toString());
+    }
+
+    /**
+     * 修改用户信息
+     * @param request
+     * @param response
+     */
+    public void updatePeronal(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        HttpSession session=request.getSession();
+        UserDto userDto = (UserDto) session.getAttribute("user");
+        Map<String, Object> msg = new HashMap<>();
+        ResponseMsg responseMsg=new ResponseMsg();
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        if (userDto==null){
+            //如果session已过期，给出提示
+            responseMsg.setCode(500);
+            responseMsg.setMsg("用户信息已过期");
+        }else {
+            UserDto oldUser = userService.selectById(userDto.getUserId());
+            if(oldUser ==null){
+                responseMsg.setCode(500);
+                responseMsg.setMsg("非法用户信息");
+            }
+            else {
+                UserDto user=new UserDto();
+                user.setUserId(Long.valueOf(request.getParameter("userId")));
+                user.setName(request.getParameter("name"));
+                user.setSex(Integer.valueOf(request.getParameter("sex")));
+                if (request.getParameter("birth")!=null){
+                    log.info(request.getParameter("birth"));
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                    log.info(request.getParameter("birth"));
+
+                    user.setBirth(sdf.parse(request.getParameter("birth")));
+                }
+                user.setMobile(request.getParameter("mobile"));
+                user.setEmail(request.getParameter("email"));
+                user.setProvince(request.getParameter("province"));
+                user.setCity(request.getParameter("city"));
+                user.setDistrict(request.getParameter("district"));
+                user.setLiveAddress(request.getParameter("liveAddress"));
+                boolean success = userService.updateBasicMesg(user);
+                if (success){
+                    responseMsg.setCode(200);
+                    responseMsg.setMsg("修改成功");
+                }
+                else {
+                    responseMsg.setCode(500);
+                    responseMsg.setMsg("修改失败");
+                }
+            }
+        }
+
+        response.getWriter().write(responseMsg.toString());
+    }
+
+    public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") != null) {
+            session.removeAttribute("user");
+        }
+        response.sendRedirect(request.getContextPath());
     }
 
     /**

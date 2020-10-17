@@ -155,16 +155,16 @@
             url: "user/login",
             data: $('#signupForm').serialize(),
             success: function (r) {
-                console.log(r);
-                console.log(r.data);
-                console.log(r.code);
+                console.log(r.msg);
                 if (r.code == 200) {
                     var index = layer.load(1, {
                         shade: [0.1, '#fff'] //0.1透明度的白色背景
                     });
                     parent.location.href = 'index';
                 } else {
-                    layer.msg(r.msg);
+                    //layer.msg(r.msg);
+                    layer.alert("<a style='color:#59b4ff'>"+r.msg+"</a>",{icon:2});
+                    $("#imgVerify").click();
                 }
             },
             error: function (s) {
