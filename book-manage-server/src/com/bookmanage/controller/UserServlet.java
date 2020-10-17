@@ -46,19 +46,7 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 获取请求的URI地址信息
-        String url = req.getRequestURI();
-        // 截取其中的方法名
-        String methodName = url.substring(url.lastIndexOf("/") + 1);
-        Method method = null;
-        try {
-            // 使用反射机制获取在本类中声明了的方法
-            method = getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
-            // 执行方法
-            method.invoke(this, req, resp);
-        } catch (Exception e) {
-            throw new RuntimeException("调用方法出错！");
-        }
+        ServletReflect.dispatcher(this,req,resp);
     }
 
     public void login(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

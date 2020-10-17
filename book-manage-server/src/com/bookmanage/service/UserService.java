@@ -30,7 +30,6 @@ public class UserService {
         if (list != null && list.size() > 0) {
             return list.get(0);
         }
-        //System.out.println(list.toString());
         return null;
 
     }
