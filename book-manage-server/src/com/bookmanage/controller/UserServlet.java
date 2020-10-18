@@ -88,11 +88,12 @@ public class UserServlet extends HttpServlet {
      */
     public void personal(HttpServletRequest request, HttpServletResponse response) throws ServletException,
             IOException {
-        log.info(request.getContextPath()+"/jspPage/user/personal.jsp");
+        String target="/jspPage/user/personal.jsp";
         HttpSession session=request.getSession();
         UserDto user = (UserDto) session.getAttribute("user");
+        log.info(request.getContextPath()+target);
 
-        response.sendRedirect(request.getContextPath()+"/jspPage/user/personal.jsp");
+        response.sendRedirect(request.getContextPath()+target);
 
     }
 
@@ -145,6 +146,14 @@ public class UserServlet extends HttpServlet {
         }
 
         response.getWriter().write(responseMsg.toString());
+    }
+
+    public void myUpload(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String target="/jspPage/book/myUpload.jsp";
+        HttpSession session=request.getSession();
+        log.info(request.getContextPath()+target);
+
+        response.sendRedirect(request.getContextPath()+target);
     }
 
     /**

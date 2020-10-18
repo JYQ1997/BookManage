@@ -74,60 +74,52 @@
                                data-index="0" href="/main">了解BootDo</a></li>
                     </ul>
                 </li>
-                <li>
 
-                <a href="#">
-                    <i class="fa fa fa-bar-chart-o"></i>
-                    <span class="nav-label">基础信息</span> <span
-                        class="fa arrow"></span>
-
-                    <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">个人资料</a></a><li>
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">密码修改</a></a><li>
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">信箱</a></a><li>
-                    </ul>
-                </a>
-                <a href="#">
-                    <i class="fa fa fa-bar-chart-o"></i>
-                    <span class="nav-label">图书信息</span> <span
-                        class="fa arrow"></span>
-
-                    <ul class="nav nav-second-level">
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">图书列表</a></a><li>
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">我的上传</a></a><li>
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">我的下载</a></a><li>
-                        <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">浏览记录</a></a><li>
-                    </ul>
-                </a>
                     <%
                         if (2==user.getRoleId()){
                             %>
 
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-book"></i>
+                                <span class="nav-label">图书信息</span> <span
+                                    class="fa arrow"></span>
+
+                                <ul class="nav nav-second-level">
+                                    <li><a class="J_menuItem" href="javascript:void(0)">图书列表</a><li>
+                                    <li><a class="J_menuItem" href="<%=basePath%>user/myUpload">我的上传</a><li>
+                                    <li><a class="J_menuItem" href="javascript:void(0)">我的下载</a><li>
+                                    <li><a class="J_menuItem" href="javascript:void(0)">浏览记录</a><li>
+                                </ul>
+                            </a>
+                        </li>
                     <%
                         }else {
                             %>
 
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-map"></i>
+                            <span class="nav-label">图书管理</span> <span
+                                class="fa arrow"></span>
 
-                    <a href="#">
-                        <i class="fa fa fa-bar-chart-o"></i>
-                        <span class="nav-label">图书管理</span> <span
-                            class="fa arrow"></span>
+                            <ul class="nav nav-second-level">
+                                <li><a class="J_menuItem" href="<%=basePath%>book/bookManage">图书管理</a><li>
+                            </ul>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa fa-bar-chart-o"></i>
+                            <span class="nav-label">用户管理</span> <span
+                                class="fa arrow"></span>
 
-                        <ul class="nav nav-second-level">
-                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">类别管理</a></a><li>
-                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">上架下架</a></a><li>
-                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">权限设置</a></a><li>
-                        </ul>
-                    </a>
-                    <a href="#">
-                        <i class="fa fa fa-bar-chart-o"></i>
-                        <span class="nav-label">用户管理</span> <span
-                            class="fa arrow"></span>
+                            <ul class="nav nav-second-level">
+                                <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">用户列表</a></a><li>
+                            </ul>
+                        </a>
+                    </li>
 
-                        <ul class="nav nav-second-level">
-                            <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">启用禁用</a></a><li>
-                        </ul>
-                    </a>
                     <%
                         }
                     %>

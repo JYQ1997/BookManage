@@ -45,7 +45,6 @@ public class BaseDao<E> implements Serializable {
      * @param object 传入对应的占位符的值
      * @return 返回查询到的记录转化成的对象的集合
      */
-    //Object...parameters是sql语句中对应的占位符的值，是一个不定长可变参数，我们需要写一个函数来获取他
     public List<E> list(String sql, List<?> object) {
         Connection conn = null;
         PreparedStatement st = null;
@@ -74,6 +73,37 @@ public class BaseDao<E> implements Serializable {
         return list;
     }
 
+    public Integer count(String sql, List<?> object){
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        List<E> list = new ArrayList<>();
+        Integer total=0;
+        try {
+            conn = DBUtil.getConnection();
+            st = conn.prepareStatement(sql);
+            //setPstm(st, object);
+            fillPstm(st,object);
+            log.info(st.toString());
+            rs = st.executeQuery();
+            if (rs.next()) {
+                total=rs.getInt(0);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, rs);
+        }
+        log.info("总记录数为:" + total);
+        return total;
+    }
+
+    /**
+     * 修改
+     * @param sql
+     * @param object
+     * @return
+     */
     public int updateByDto(String sql, List<?> object) {
         Connection conn = null;
         PreparedStatement st = null;
@@ -92,6 +122,27 @@ public class BaseDao<E> implements Serializable {
             DBUtil.close(conn, st, rs);
         }
         log.info("修改结束，影响行数:" + rows);
+        return rows;
+    }
+
+    public int insert(String sql, List<?> object){
+        Connection conn = null;
+        PreparedStatement st = null;
+        ResultSet rs = null;
+        int rows = 0;
+
+        try {
+            conn = DBUtil.getConnection();
+            st = conn.prepareStatement(sql);
+            fillPstm(st,object);
+            log.info(st.toString());
+            rows = st.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(conn, st, rs);
+        }
+        log.info("添加结束，影响行数:" + rows);
         return rows;
     }
 

@@ -86,7 +86,6 @@ public class PageParam {
     }
 
     public void setOffset(Integer offset) {
-        int i = (this.pageNo-1) * this.pageSize;
         this.offset = offset;
     }
 }

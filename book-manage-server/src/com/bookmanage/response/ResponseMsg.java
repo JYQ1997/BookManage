@@ -33,17 +33,7 @@ public class ResponseMsg {
 
     @Override
     public String toString() {
-        String str="{" +
-                "\"code\":" + code +
-                ", \"msg\":\"" + msg +
-                "\", \"data=\":";
-        if (data==null){
-            str+="{}";
-        }
-        else {
-            str+=JSONObject.toJSONString(data);
-        }
-        str+="}";
+        String str=JSONObject.toJSONString(this);
         return str;
     }
 
