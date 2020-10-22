@@ -1,5 +1,7 @@
 package com.bookmanage.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 public class BookDto {
@@ -20,8 +22,12 @@ public class BookDto {
     private Integer allowFeed;//允许反馈
     private Integer status;//状态 1:上架;2:下架'
     private String author;//作者
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date gtmCreate;//创建时间
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date gtmModified;//修改时间
+
+    private String name;//上传者
 
     public Long getBid() {
         return bid;
@@ -173,5 +179,13 @@ public class BookDto {
 
     public void setGtmModified(Date gtmModified) {
         this.gtmModified = gtmModified;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

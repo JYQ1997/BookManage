@@ -9,6 +9,7 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
@@ -87,7 +88,7 @@ public class BaseDao<E> implements Serializable {
             log.info(st.toString());
             rs = st.executeQuery();
             if (rs.next()) {
-                total=rs.getInt(0);
+                total=rs.getInt(1);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -210,7 +211,7 @@ public class BaseDao<E> implements Serializable {
                     try {
                         method = cls.getMethod(methodName, java.util.Date.class);
                         if (method != null) {
-                            method.invoke(obj, rs.getTimestamp(columnName));
+                            method.invoke(obj, (Date)rs.getTimestamp(columnName));
                         }
                     } catch (Exception e) {
                         try {

@@ -37,7 +37,7 @@ public class BookService {
      * @return
      */
     public List<BookDto> selectByPage(PageParam pageParam, HashMap<String,Object> otherParam){
-        String sql="select b.* from book_content b left join sys_user u on b.created=u.user_id where 1=1 ";
+        String sql="select b.*,u.name name from book_content b left join sys_user u on b.created=u.user_id where 1=1 ";
         List<Object> paramList=new ArrayList<>();
         if (otherParam!=null){
             if (otherParam.get("name")!=null){
@@ -76,7 +76,7 @@ public class BookService {
     }
 
     public Integer selectCountByParam(HashMap<String,Object> otherParam){
-        String sql="select count(*) from book_content b left join sys_user u where b.created=u.user_id ";
+        String sql="select count(*) from book_content b left join sys_user u on b.created=u.user_id where 1=1";
         List<Object> paramList=new ArrayList<>();
         if (otherParam!=null){
 

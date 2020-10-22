@@ -220,12 +220,10 @@
                             title : '父级编号'
                         },
                         {
-                            visible : false,
                             field : 'createBy',
                             title : '创建者'
                         },
                         {
-                            visible : false,
                             field : 'createDate',
                             title : '创建时间'
                         },

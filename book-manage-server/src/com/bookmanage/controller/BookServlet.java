@@ -115,6 +115,12 @@ public class BookServlet extends HttpServlet {
 
     }
 
+    /**
+     * 我的上传列表
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
     public void myUpload(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession();
         UserDto user = (UserDto) session.getAttribute("user");
@@ -131,6 +137,12 @@ public class BookServlet extends HttpServlet {
         pageResponse.setRows(bookDtos);
         pageResponse.setTotal(count);
         resp.getWriter().write(pageResponse.toString());
+
+    }
+
+
+    public void myUploadEdit(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
 
     }
 

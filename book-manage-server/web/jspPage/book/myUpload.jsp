@@ -202,7 +202,7 @@
                         },
                         {
                             visible : false,
-                            field : 'createBy',
+                            field : 'name',
                             title : '创建者'
                         },
                         {
@@ -270,7 +270,7 @@
             maxmin : true,
             shadeClose : false, // 点击遮罩关闭层
             area : [ '800px', '520px' ],
-            content : prefix + '/edit/' + id // iframe的url
+            content : prefix + '/myUploadEdit/' + id // iframe的url
         });
     }
     function remove(id) {
