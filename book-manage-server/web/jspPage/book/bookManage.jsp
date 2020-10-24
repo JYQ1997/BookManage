@@ -1,12 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Dell
-  Date: 2020-10-18
-  Time: 15:48
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
 <%@ page import="com.bookmanage.dto.UserDto" %><%--
   Created by IntelliJ IDEA.
   User: Dell
@@ -16,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-    <%
+<%
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
     UserDto user= (UserDto) session.getAttribute("user");
@@ -46,15 +37,6 @@
         <div class="ibox">
             <div class="ibox-body">
                 <div class="fixed-table-toolbar">
-                    <div class="columns pull-left">
-                        <button type="button"
-                                class="btn btn-primary" onclick="add()">
-                            <i class="fa fa-plus" aria-hidden="true"></i>添加
-                        </button>
-                        <button type="button" class="btn  btn-danger" onclick="batchRemove()">
-                            <i class="fa fa-trash" aria-hidden="true"></i>删除
-                        </button>
-                    </div>
                     <div class="columns pull-right">
                         <button class="btn btn-success" onclick="reLoad()">查询</button>
                     </div>
@@ -135,13 +117,37 @@
 
         load();
     });
+    /*function selectLoad() {
+        var html = "";
+        $.ajax({
+            url :prefix + "book/type",
+            success : function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    html += '<option value="' + data[i].code + '">' + data[i].desc + '</option>'
+                }
+                $(".chosen-select").append(html);
+                $(".chosen-select").chosen({
+                    maxHeight : 200
+                });
+                //点击事件
+                $('.chosen-select').on('change', function(e, params) {
+                    console.log(params.selected);
+                    var opt = {
+                        query : {
+                            type : params.selected,
+                        }
+                    }
+                    $('#exampleTable').bootstrapTable('refresh', opt);
+                });
+            }
+        });
+    }*/
     function load() {
-        //selectLoad();
         $('#exampleTable')
             .bootstrapTable(
                 {
                     method : 'get', // 服务器数据的请求方式 get or post
-                    url : prefix + "book/myUpload", // 服务器数据的加载地址
+                    url : prefix + "book/manageList", // 服务器数据的加载地址
                     //	showRefresh : true,
                     //	showToggle : true,
                     //	showColumns : true,
@@ -155,7 +161,7 @@
                     singleSelect : false, // 设置为true将禁止多选
                     // contentType : "application/x-www-form-urlencoded",
                     // //发送到服务器的数据编码类型
-                    pageSize : 2, // 如果设置了分页，每页数据条数
+                    pageSize : 10, // 如果设置了分页，每页数据条数
                     pageNumber : 1, // 如果设置了分布，首页页码
                     //search : true, // 是否显示搜索框
                     //showColumns : false, // 是否显示内容下拉框（选择显示的列）
@@ -166,7 +172,7 @@
                             limit : params.limit,
                             offset : params.offset,
                             // name:$('#searchName').val(),
-                            //type : $('#searchName').val(),
+                            type : $('#type').val(),
                         };
                     },
                     // //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
@@ -203,21 +209,7 @@
                         {
                             visible : false,
                             field : 'sort',
-                            title : '排序（降序）'
-                        },
-                        {
-                            visible : false,
-                            field : 'parentId',
-                            title : '父级编号'
-                        },
-                        {
-                            visible : false,
-                            field : 'name',
-                            title : '创建者'
-                        },
-                        {
-                            field : 'gtmCreate',
-                            title : '创建时间'
+                            title : '排序（升序）'
                         },
                         {
                             field : 'status',
@@ -229,7 +221,7 @@
                                 }
                                 else if (row.status==2) {
                                     //如果图书状态是禁用
-                                    var e = '<span style="color: #ff3f41">申请中</span>';
+                                    var e = '<span style="color: #26d0ff">申请恢复</span>';
                                 }
                                 else{
                                     //如果图书状态是禁用
@@ -238,6 +230,19 @@
 
                                 return e;
                             }
+                        },
+                        {
+                            field : 'name',
+                            title : '创建者'
+                        },
+                        {
+                            field : 'gtmCreate',
+                            title : '创建时间'
+                        },
+                        {
+                            visible : false,
+                            field : 'updateBy',
+                            title : '更新者'
                         },
                         {
                             visible : false,
@@ -259,23 +264,17 @@
                             field : 'id',
                             align : 'center',
                             formatter : function(value, row, index) {
-                                if (row.status==1){
-                                    //如果图书状态是启用
-                                    var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=编辑" onclick="edit(\''
-                                        + row.bid
-                                        + '\')"><i class="fa fa-edit"></i></a> ';
-                                    var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                        + row.bid
-                                        + '\')"><i class="fa fa-remove"></i></a> ';
-                                    return e + f;
+                                var result="启用";
+                                if (row.status==1) {
+                                    var result="禁用";
                                 }
-                                else{
-                                    //如果图书状态是启用
-                                    var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="申请恢复"  mce_href="#" onclick="apply(\''
-                                        + row.bid
-                                        + '\')">申请恢复</a> ';
-                                    return f;
-                                }
+                                var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=启用禁用" onclick="changeStatus(\''
+                                    + row.bid
+                                    + '\')">'+result+'</a> ';
+                                var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
+                                    + row.bid
+                                    + '\')"><i class="fa fa-remove"></i></a> ';
+                                return e+f;
                             }
                         } ]
                 });
@@ -288,24 +287,21 @@
         }
         $('#exampleTable').bootstrapTable('refresh', opt);
     }
-    function add() {
-        layer.open({
-            type : 2,
-            title : '增加',
-            maxmin : true,
-            shadeClose : false, // 点击遮罩关闭层
-            area : [ '800px', '520px' ],
-            content : prefix + 'jspPage/book/addBook.jsp' // iframe的url
-        });
-    }
-    function edit(id) {
-        layer.open({
-            type : 2,
-            title : '编辑',
-            maxmin : true,
-            shadeClose : false, // 点击遮罩关闭层
-            area : [ '800px', '520px' ],
-            content : prefix + 'jspPage/book/editBook.jsp?bid=' + id // iframe的url
+    function changeStatus(id) {
+        $.ajax({
+            url : prefix + "book/changeStatus",
+            type : "post",
+            data : {
+                'bid' : id
+            },
+            success : function(r) {
+                if (r.code == 200) {
+                    layer.msg(r.msg);
+                    reLoad();
+                } else {
+                    layer.msg(r.msg);
+                }
+            }
         });
     }
     function remove(id) {
@@ -319,7 +315,7 @@
                     'bid' : id
                 },
                 success : function(r) {
-                    if (r.code == 200) {
+                    if (r.code == 0) {
                         layer.msg(r.msg);
                         reLoad();
                     } else {
@@ -353,17 +349,16 @@
             var ids = new Array();
             // 遍历所有选择的行数据，取每条数据对应的ID
             $.each(rows, function(i, row) {
-                ids[i] = row['bid'];
+                ids[i] = row['id'];
             });
             $.ajax({
                 type : 'POST',
                 data : {
-                    "bid" : JSON.stringify(ids)
+                    "ids" : ids
                 },
-                traditional: true,
-                url : prefix + 'book/batchRemove',
+                url : prefix + '/batchRemove',
                 success : function(r) {
-                    if (r.code == 200) {
+                    if (r.code == 0) {
                         layer.msg(r.msg);
                         reLoad();
                     } else {
@@ -372,25 +367,6 @@
                 }
             });
         }, function() {});
-    }
-
-    function apply(id) {
-
-        $.ajax({
-            url : prefix + "book/apply",
-            type : "post",
-            data : {
-                'bid' : id
-            },
-            success : function(r) {
-                if (r.code == 200) {
-                    layer.msg(r.msg);
-                    reLoad();
-                } else {
-                    layer.msg(r.msg);
-                }
-            }
-        });
     }
 </script>
 </body>

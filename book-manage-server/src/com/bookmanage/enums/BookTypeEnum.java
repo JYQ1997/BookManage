@@ -31,4 +31,24 @@ public enum BookTypeEnum {
     public String getDesc() {
         return desc;
     }
+
+    public static Integer getCode(String desc) {
+        BookTypeEnum[] values = BookTypeEnum.values();
+        for (BookTypeEnum bookTypeEnum : values) {
+            if (bookTypeEnum.getDesc().equals(desc)) {
+                return bookTypeEnum.getCode();
+            }
+        }
+        return null;
+    }
+
+    public static String getDesc(Integer code) {
+        BookTypeEnum[] values = BookTypeEnum.values();
+        for (BookTypeEnum bookTypeEnum : values) {
+            if (bookTypeEnum.getCode().equals(code)) {
+                return bookTypeEnum.getDesc();
+            }
+        }
+        return null;
+    }
 }

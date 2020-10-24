@@ -11,6 +11,7 @@
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
     UserDto user= (UserDto) session.getAttribute("user");
+    String bid=request.getParameter("bid");
 %>
 <!DOCTYPE html>
 <html>
@@ -41,19 +42,18 @@
                 </div>
                 <div class="ibox-content">
                     <form class="form-horizontal m-t" id="signupForm">
-                        <input id="userId" name="userId" type="hidden"> <input
-                            id="menuIds" name="menuIds" type="hidden">
+                        <input id="bid" name="bid" type="hidden" value="<%=bid%>">
                         <div class="form-group">
                             <label class="col-sm-3 control-label">书名：</label>
                             <div class="col-sm-8">
-                                <input id="bookName" name="bookName" class="form-control"
+                                <input id="bookName" readonly name="bookName" class="form-control"
                                        type="text">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-3 control-label">作者：</label>
                             <div class="col-sm-8">
-                                <input id="author" name="author" class="form-control"
+                                <input id="author" name="author" readonly class="form-control"
                                        type="text">
                             </div>
                         </div>
@@ -86,7 +86,7 @@
                         <div class="form-group">
                             <label class="col-sm-3 control-label">是否允许下载：</label>
                             <div class="col-sm-8">
-                                <select name="isDownload" class="form-control">
+                                <select id="isDownload" name="isDownload" class="form-control">
                                     <option value="1">是</option>
                                     <option value="2">否</option>
                                 </select>
@@ -134,8 +134,8 @@
 <script type="text/javascript">
     //var menuTree;
 
-    var menuIds;
     $(function() {
+        load()
         validateRule();
     });
     $.validator.setDefaults({
@@ -144,15 +144,45 @@
         }
     });
 
-
-    function save() {
-        var role = $('#signupForm').serialize();
+    function load() {
         $.ajax({
             cache : true,
             type : "POST",
-            url : "<%=basePath%>book/addBook",
-            data : role, // 你的formid
+            url : "<%=basePath%>book/getBookById",
+            data : {
+                "bid":"<%=bid%>"
+            },
+            dataType : "json",
+            async : false,
+            error : function(request) {
+                alert("Connection error");
+            },
+            success : function(data) {
+                if (data.code == 200){
+                    $("#bookName").val(data.data.book.title);
+                    $("#author").val(data.data.book.author);
+                    $("#desc").val(data.data.book.desc);
+                    console.log($("#isDownload").val);
+                    $("#isDownload").val(data.data.book.isDownload);
+                    console.log($("#isDownload").val);
+                    $("#downloadPay").val(data.data.book.downloadPay);
+                    $("#type").val(data.data.book.typeCode);
 
+                } else {
+                    parent.layer.msg(data.msg);
+                }
+            }
+        });
+    }
+
+
+    function save() {
+        var from = $('#signupForm').serialize();
+        $.ajax({
+            cache : true,
+            type : "POST",
+            url : "<%=basePath%>book/editBook",
+            data : from,
             async : false,
             error : function(request) {
                 alert("Connection error");

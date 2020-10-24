@@ -1,12 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: Dell
-  Date: 2020-10-18
-  Time: 15:48
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
 <%@ page import="com.bookmanage.dto.UserDto" %><%--
   Created by IntelliJ IDEA.
   User: Dell
@@ -16,7 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-    <%
+<%
     String path = request.getContextPath();
     String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
     UserDto user= (UserDto) session.getAttribute("user");
@@ -46,15 +37,6 @@
         <div class="ibox">
             <div class="ibox-body">
                 <div class="fixed-table-toolbar">
-                    <div class="columns pull-left">
-                        <button type="button"
-                                class="btn btn-primary" onclick="add()">
-                            <i class="fa fa-plus" aria-hidden="true"></i>添加
-                        </button>
-                        <button type="button" class="btn  btn-danger" onclick="batchRemove()">
-                            <i class="fa fa-trash" aria-hidden="true"></i>删除
-                        </button>
-                    </div>
                     <div class="columns pull-right">
                         <button class="btn btn-success" onclick="reLoad()">查询</button>
                     </div>
@@ -135,13 +117,37 @@
 
         load();
     });
+    /*function selectLoad() {
+        var html = "";
+        $.ajax({
+            url :prefix + "book/type",
+            success : function(data) {
+                for (var i = 0; i < data.length; i++) {
+                    html += '<option value="' + data[i].code + '">' + data[i].desc + '</option>'
+                }
+                $(".chosen-select").append(html);
+                $(".chosen-select").chosen({
+                    maxHeight : 200
+                });
+                //点击事件
+                $('.chosen-select').on('change', function(e, params) {
+                    console.log(params.selected);
+                    var opt = {
+                        query : {
+                            type : params.selected,
+                        }
+                    }
+                    $('#exampleTable').bootstrapTable('refresh', opt);
+                });
+            }
+        });
+    }*/
     function load() {
-        //selectLoad();
         $('#exampleTable')
             .bootstrapTable(
                 {
                     method : 'get', // 服务器数据的请求方式 get or post
-                    url : prefix + "book/myUpload", // 服务器数据的加载地址
+                    url : prefix + "user/getUserList", // 服务器数据的加载地址
                     //	showRefresh : true,
                     //	showToggle : true,
                     //	showColumns : true,
@@ -155,10 +161,10 @@
                     singleSelect : false, // 设置为true将禁止多选
                     // contentType : "application/x-www-form-urlencoded",
                     // //发送到服务器的数据编码类型
-                    pageSize : 2, // 如果设置了分页，每页数据条数
+                    pageSize : 10, // 如果设置了分页，每页数据条数
                     pageNumber : 1, // 如果设置了分布，首页页码
                     //search : true, // 是否显示搜索框
-                    //showColumns : false, // 是否显示内容下拉框（选择显示的列）
+                    showColumns : true, // 是否显示内容下拉框（选择显示的列）
                     sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
                     queryParams : function(params) {
                         return {
@@ -166,7 +172,7 @@
                             limit : params.limit,
                             offset : params.offset,
                             // name:$('#searchName').val(),
-                            //type : $('#searchName').val(),
+                            type : $('#type').val(),
                         };
                     },
                     // //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
@@ -180,59 +186,49 @@
                             checkbox : true
                         },
                         {
-                            field : 'bid',
-                            title : '编号'
+                            field : 'userId',
+                            title : '用户ID'
                         },
                         {
-                            field : 'title',
-                            title : '书名'
+                            field : 'userName',
+                            title : '账号'
                         },
                         {
-                            field : 'author',
-                            title : '作者',
-                            width : '100px'
-                        },
-                        {
-                            field : 'type',
-                            title : '类型'
-                        },
-                        {
-                            field : 'desc',
-                            title : '描述'
-                        },
-                        {
-                            visible : false,
-                            field : 'sort',
-                            title : '排序（降序）'
-                        },
-                        {
-                            visible : false,
-                            field : 'parentId',
-                            title : '父级编号'
-                        },
-                        {
-                            visible : false,
                             field : 'name',
-                            title : '创建者'
+                            title : '昵称'
                         },
                         {
-                            field : 'gtmCreate',
-                            title : '创建时间'
+                            field : 'sex',
+                            title : '性别',
+                            formatter : function(value, row, index) {
+                                if (row.sex==1){
+                                    var e = '男';
+                                }
+                                else{
+                                    var e = '女';
+                                }
+
+                                return e;
+                            }
+                        },
+                        {
+                            field : 'email',
+                            title : '邮箱'
                         },
                         {
                             field : 'status',
                             title : '状态',
                             formatter : function(value, row, index) {
                                 if (row.status==1){
-                                    //如果图书状态是启用
+                                    //如果用户状态是启用
                                     var e = '启用';
                                 }
                                 else if (row.status==2) {
-                                    //如果图书状态是禁用
-                                    var e = '<span style="color: #ff3f41">申请中</span>';
+                                    //如果用户状态是禁用
+                                    var e = '<span style="color: #42c0ff">申请恢复</span>';
                                 }
-                                else{
-                                    //如果图书状态是禁用
+                                else {
+                                    //如果用户状态是禁用
                                     var e = '<span style="color: red">已禁用</span>';
                                 }
 
@@ -240,41 +236,55 @@
                             }
                         },
                         {
-                            visible : false,
-                            field : 'updateDate',
-                            title : '更新时间'
+                            field : 'gmtCreate',
+                            title : '注册时间'
                         },
                         {
-                            visible : false,
-                            field : 'remarks',
-                            title : '备注信息'
+                            field : 'name',
+                            title : '创建者'
                         },
                         {
-                            visible : false,
-                            field : 'delFlag',
-                            title : '删除标记'
+                            field : 'province',
+                            title : '省份'
+                        },
+                        {
+                            field : 'city',
+                            title : '市区'
                         },
                         {
                             title : '操作',
                             field : 'id',
                             align : 'center',
                             formatter : function(value, row, index) {
-                                if (row.status==1){
-                                    //如果图书状态是启用
-                                    var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=编辑" onclick="edit(\''
-                                        + row.bid
-                                        + '\')"><i class="fa fa-edit"></i></a> ';
-                                    var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                        + row.bid
-                                        + '\')"><i class="fa fa-remove"></i></a> ';
+
+                                if (row.userId!=<%=user.getUserId()%> && row.roleId > <%=user.getRoleId()%>){
+                                    //不是自己，且登陆用户权限较大，允许操作
+
+                                    if (row.status==1){
+                                        //如果用户状态是启用
+                                        var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=状态" onclick="changeSatus(\''
+                                            + row.userId
+                                            + '\')">禁用</a> ';
+                                    }
+                                    else{
+                                        //如果用户状态是禁用
+                                        var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=状态" onclick="changeSatus(\''
+                                            + row.userId
+                                            + '\')">启用</a> ';
+                                    }
+                                    //如果是超级管理员
+                                    if(row.roleId==2){
+                                        var f = '<a class="btn btn-success btn-sm ' + s_add_h + '" href="#" title="下载"  mce_href="#" onclick="setUser(\''
+                                            + row.userId
+                                            + '\')">设为普通用户</a> ';
+                                    }
+                                    //如果是超级管理员
+                                    if(row.roleId==3){
+                                        var f = '<a class="btn btn-success btn-sm ' + s_add_h + '" href="#" title="下载"  mce_href="#" onclick="setAdmin(\''
+                                            + row.userId
+                                            + '\')">设为管理员</a> ';
+                                    }
                                     return e + f;
-                                }
-                                else{
-                                    //如果图书状态是启用
-                                    var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="申请恢复"  mce_href="#" onclick="apply(\''
-                                        + row.bid
-                                        + '\')">申请恢复</a> ';
-                                    return f;
                                 }
                             }
                         } ]
@@ -288,46 +298,60 @@
         }
         $('#exampleTable').bootstrapTable('refresh', opt);
     }
-    function add() {
-        layer.open({
-            type : 2,
-            title : '增加',
-            maxmin : true,
-            shadeClose : false, // 点击遮罩关闭层
-            area : [ '800px', '520px' ],
-            content : prefix + 'jspPage/book/addBook.jsp' // iframe的url
-        });
-    }
-    function edit(id) {
-        layer.open({
-            type : 2,
-            title : '编辑',
-            maxmin : true,
-            shadeClose : false, // 点击遮罩关闭层
-            area : [ '800px', '520px' ],
-            content : prefix + 'jspPage/book/editBook.jsp?bid=' + id // iframe的url
-        });
-    }
-    function remove(id) {
-        layer.confirm('确定要删除选中的记录？', {
-            btn : [ '确定', '取消' ]
-        }, function() {
-            $.ajax({
-                url : prefix + "book/remove",
-                type : "post",
-                data : {
-                    'bid' : id
-                },
-                success : function(r) {
-                    if (r.code == 200) {
-                        layer.msg(r.msg);
-                        reLoad();
-                    } else {
-                        layer.msg(r.msg);
-                    }
+
+    function changeSatus(id) {
+
+        $.ajax({
+            url : prefix + "user/changeStatus",
+            type : "post",
+            data : {
+                'id' : id
+            },
+            success : function(r) {
+                if (r.code == 200) {
+                    layer.msg(r.msg);
+                    reLoad();
+                } else {
+                    layer.msg(r.msg);
                 }
-            });
-        })
+            }
+        });
+    }
+    function setAdmin(id) {
+
+        $.ajax({
+            url : prefix + "user/setAdmin",
+            type : "post",
+            data : {
+                'id' : id
+            },
+            success : function(r) {
+                if (r.code == 200) {
+                    layer.msg(r.msg);
+                    reLoad();
+                } else {
+                    layer.msg(r.msg);
+                }
+            }
+        });
+    }
+    function setUser(id) {
+
+        $.ajax({
+            url : prefix + "user/setUser",
+            type : "post",
+            data : {
+                'id' : id
+            },
+            success : function(r) {
+                if (r.code == 200) {
+                    layer.msg(r.msg);
+                    reLoad();
+                } else {
+                    layer.msg(r.msg);
+                }
+            }
+        });
     }
 
     function addD(type,description) {
@@ -353,17 +377,16 @@
             var ids = new Array();
             // 遍历所有选择的行数据，取每条数据对应的ID
             $.each(rows, function(i, row) {
-                ids[i] = row['bid'];
+                ids[i] = row['id'];
             });
             $.ajax({
                 type : 'POST',
                 data : {
-                    "bid" : JSON.stringify(ids)
+                    "ids" : ids
                 },
-                traditional: true,
-                url : prefix + 'book/batchRemove',
+                url : prefix + '/batchRemove',
                 success : function(r) {
-                    if (r.code == 200) {
+                    if (r.code == 0) {
                         layer.msg(r.msg);
                         reLoad();
                     } else {
@@ -372,25 +395,6 @@
                 }
             });
         }, function() {});
-    }
-
-    function apply(id) {
-
-        $.ajax({
-            url : prefix + "book/apply",
-            type : "post",
-            data : {
-                'bid' : id
-            },
-            success : function(r) {
-                if (r.code == 200) {
-                    layer.msg(r.msg);
-                    reLoad();
-                } else {
-                    layer.msg(r.msg);
-                }
-            }
-        });
     }
 </script>
 </body>

@@ -66,64 +66,58 @@
                         <div class="logo-element">BootDo</div>
                     </div>
                 </li>
-                <li><a href="#"> <i class="fa fa-home"></i> <span
+                <li>
+                    <a href="#"> <i class="fa fa-home"></i> <span
                         class="nav-label">主页</span> <span class="fa arrow"></span>
-                </a>
+                    </a>
                     <ul class="nav nav-second-level">
                         <li><a id="index001" class="J_menuItem" href="index_v1.html"
                                data-index="0" href="/main">了解BootDo</a></li>
                     </ul>
                 </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-book"></i>
+                        <span class="nav-label">图书信息</span> <span
+                            class="fa arrow"></span>
 
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem" href="<%=basePath%>book/bookList">图书列表</a><li>
+                            <li><a class="J_menuItem" href="<%=basePath%>user/myUpload">我的上传</a><li>
+                            <li><a class="J_menuItem" href="javascript:void(0)">我的下载</a><li>
+                            <li><a class="J_menuItem" href="javascript:void(0)">浏览记录</a><li>
+                        </ul>
+                    </a>
+                </li>
                     <%
-                        if (2==user.getRoleId()){
+                        if (1==user.getRoleId()||2==user.getRoleId()){
                             %>
 
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-book"></i>
-                                <span class="nav-label">图书信息</span> <span
-                                    class="fa arrow"></span>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-map"></i>
+                        <span class="nav-label">图书管理</span> <span
+                            class="fa arrow"></span>
 
-                                <ul class="nav nav-second-level">
-                                    <li><a class="J_menuItem" href="javascript:void(0)">图书列表</a><li>
-                                    <li><a class="J_menuItem" href="<%=basePath%>user/myUpload">我的上传</a><li>
-                                    <li><a class="J_menuItem" href="javascript:void(0)">我的下载</a><li>
-                                    <li><a class="J_menuItem" href="javascript:void(0)">浏览记录</a><li>
-                                </ul>
-                            </a>
-                        </li>
-                    <%
-                        }else {
-                            %>
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem" href="<%=basePath%>book/bookManage">图书管理</a><li>
+                        </ul>
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa fa-bar-chart-o"></i>
+                        <span class="nav-label">用户管理</span> <span
+                            class="fa arrow"></span>
 
-                    <li>
-                        <a href="#">
-                            <i class="fa fa-map"></i>
-                            <span class="nav-label">图书管理</span> <span
-                                class="fa arrow"></span>
-
-                            <ul class="nav nav-second-level">
-                                <li><a class="J_menuItem" href="<%=basePath%>book/bookManage">图书管理</a><li>
-                            </ul>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="#">
-                            <i class="fa fa fa-bar-chart-o"></i>
-                            <span class="nav-label">用户管理</span> <span
-                                class="fa arrow"></span>
-
-                            <ul class="nav nav-second-level">
-                                <li><a class="J_menuItem"><a @click="personal" href="javascript:void(0)">用户列表</a></a><li>
-                            </ul>
-                        </a>
-                    </li>
-
+                        <ul class="nav nav-second-level">
+                            <li><a class="J_menuItem" href="<%=basePath%>user/userManage">用户列表</a><li>
+                        </ul>
+                    </a>
+                </li>
                     <%
                         }
                     %>
-                </li>
             </ul>
         </div>
     </nav>

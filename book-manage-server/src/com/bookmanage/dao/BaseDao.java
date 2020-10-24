@@ -172,6 +172,7 @@ public class BaseDao<E> implements Serializable {
             int columnType = rd.getColumnType(i + 1);
             Method method = null;
             switch (columnType) {
+                case java.sql.Types.LONGVARCHAR:
                 case java.sql.Types.VARCHAR:
                 case java.sql.Types.CHAR:
                     try {

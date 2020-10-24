@@ -1,9 +1,11 @@
 package com.bookmanage.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.bookmanage.dao.BookDao;
 import com.bookmanage.dto.BookDto;
 import com.bookmanage.dto.UserDto;
 import com.bookmanage.util.PageParam;
+import com.mysql.cj.xdevapi.JsonArray;
 import com.sun.xml.internal.ws.server.ServerRtException;
 
 import java.util.ArrayList;
@@ -40,33 +42,45 @@ public class BookService {
         String sql="select b.*,u.name name from book_content b left join sys_user u on b.created=u.user_id where 1=1 ";
         List<Object> paramList=new ArrayList<>();
         if (otherParam!=null){
+            if (otherParam.get("status")!=null){
+                //根据图书状态
+                sql+=" and  b.status= ? ";
+                paramList.add(otherParam.get("status"));
+            }
             if (otherParam.get("name")!=null){
                 //根据上传用户查找
                 sql+=" and u.name = ? ";
                 paramList.add(otherParam.get("name"));
             }
-            else if(otherParam.get("bookName")!=null){
+            if(otherParam.get("bookName")!=null){
                 //根据书名模糊查找
                 sql+=" and b.title like ? ";
                 paramList.add(otherParam.get("bookName"));
             }
-            else if(otherParam.get("type")!=null){
+            if(otherParam.get("type")!=null){
                 //根据类型模糊查找
                 sql+=" and b.type like ? ";
                 paramList.add(otherParam.get("type"));
             }
-            else if(otherParam.get("tags")!=null){
+            if(otherParam.get("tags")!=null){
                 //根据标签模糊查找
                 sql+=" and b.tags like ? ";
                 paramList.add(otherParam.get("tags"));
             }
-            else if(otherParam.get("author")!=null){
+            if(otherParam.get("author")!=null){
                 //根据作者查找
                 sql+=" and b.author = ? ";
                 paramList.add(otherParam.get("author"));
             }
+
+            if (otherParam.get("sort")!=null){
+                //根据上传用户查找
+                sql+=" order by b.gmt_create";
+                if (otherParam.get("sort")=="2")
+                    sql+=" desc";
+            }
         }
-        sql+=" order by b.gtm_create limit ? , ?";
+        sql+=" limit ? , ?";
         paramList.add(pageParam.getOffset());//获取偏移量
         paramList.add(pageParam.getPageSize());//获取每页条数
         List<BookDto> list = bookDao.list(sql, paramList);
@@ -85,22 +99,22 @@ public class BookService {
                 sql+=" and u.name = ? ";
                 paramList.add(otherParam.get("name"));
             }
-            else if(otherParam.get("BookName")!=null){
+            if(otherParam.get("BookName")!=null){
                 //根据书名模糊查找
                 sql+=" and b.title like ? ";
                 paramList.add(otherParam.get("BookName"));
             }
-            else if(otherParam.get("type")!=null){
+            if(otherParam.get("type")!=null){
                 //根据类型模糊查找
                 sql+=" and b.type like ? ";
                 paramList.add(otherParam.get("type"));
             }
-            else if(otherParam.get("tags")!=null){
+            if(otherParam.get("tags")!=null){
                 //根据标签模糊查找
                 sql+=" and b.tags like ? ";
                 paramList.add(otherParam.get("tags"));
             }
-            else if(otherParam.get("author")!=null){
+            if(otherParam.get("author")!=null){
                 //根据作者查找
                 sql+=" and b.author = ? ";
                 paramList.add(otherParam.get("author"));
@@ -117,12 +131,13 @@ public class BookService {
      * @return
      */
     public boolean addBook(BookDto bookDto,UserDto user){
-        String sql="insert into book_content (`title`,`created`,`desc`,`is_download`,`download_pay`,`author`,`gtm_create`,`status`) values (?,?,?,?,?,?,?,1)";
+        String sql="insert into book_content (`title`,`created`,`desc`,`type`,`is_download`,`download_pay`,`author`,`gtm_create`,`status`) values (?,?,?,?,?,?,?,?,1)";
 
         List<Object> paramList=new ArrayList<>();
         paramList.add(bookDto.getTitle());
         paramList.add(user.getUserId());
         paramList.add(bookDto.getDesc());
+        paramList.add(bookDto.getType());
         paramList.add(bookDto.getIsDownload());
         paramList.add(bookDto.getDownloadPay());
         paramList.add(bookDto.getAuthor());
@@ -130,6 +145,87 @@ public class BookService {
         int insert = bookDao.insert(sql, paramList);
         if (insert>0){
 
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * 修改图书
+     * @param bookDto
+     * @return
+     */
+    public boolean updateById(BookDto bookDto){
+        String sql="update book_content set  `desc`=?,is_download=?,download_pay=?,modified=?,gtm_modified=? ";
+        if (bookDto.getType()!=null){
+            sql+=" ,type=? ";
+        }
+        sql+=" where bid=?";
+
+        List<Object> paramList=new ArrayList<>();
+        paramList.add(bookDto.getDesc());
+        paramList.add(bookDto.getIsDownload());
+        paramList.add(bookDto.getDownloadPay());
+        paramList.add(bookDto.getModified());
+        paramList.add(new Date());
+        if (bookDto.getType()!=null){
+            paramList.add(bookDto.getType());
+        }
+        paramList.add(bookDto.getBid());
+        int insert = bookDao.updateByDto(sql, paramList);
+        if (insert>0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+
+    public boolean updateStatus(BookDto bookDto){
+        String sql="update book_content set status=? where bid=?";
+
+        List<Object> paramList=new ArrayList<>();
+        paramList.add(bookDto.getStatus());
+        paramList.add(bookDto.getBid());
+        int insert = bookDao.updateByDto(sql, paramList);
+        if (insert>0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    public boolean deleteById(Long bid){
+        String sql="delete from book_content where bid=?";
+
+        List<Object> paramList=new ArrayList<>();
+        paramList.add(bid);
+        int insert = bookDao.updateByDto(sql, paramList);
+        if (insert>0){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    public boolean deleteByIds(JSONArray bids){
+        String sql="delete from book_content where bid in (";
+        for (Object bid : bids) {
+            sql+="?,";
+        }
+        sql=sql.substring(0,sql.length()-1)+")";
+
+        List<Object> paramList=new ArrayList<>();
+
+        for (Object bid : bids) {
+            paramList.add(bid);
+        }
+        int insert = bookDao.updateByDto(sql, paramList);
+        if (insert>0){
             return true;
         }
         else {

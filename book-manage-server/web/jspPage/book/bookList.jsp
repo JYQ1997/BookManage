@@ -37,25 +37,23 @@
         <div class="ibox">
             <div class="ibox-body">
                 <div class="fixed-table-toolbar">
-                    <%
-                    if (user.getRoleId()==1){
-                        //管理员可删除
-                    %>
-                    <div class="columns pull-left">
-                        <button type="button" class="btn  btn-danger" onclick="batchRemove()">
-                            <i class="fa fa-trash" aria-hidden="true"></i>删除
-                        </button>
-                    </div>
-                    <%
-                        }
-                    %>
                     <div class="columns pull-right">
                         <button class="btn btn-success" onclick="reLoad()">查询</button>
                     </div>
                     <div class="columns pull-right col-md-2 nopadding">
-                        <select data-placeholder="选择类别" class="form-control chosen-select"
+                        <select id="type" name="type" data-placeholder="选择类别" class="form-control chosen-select"
                                 tabindex="2" style="width: 100%">
-                            <option value="">选择类别</option>
+                            <option value="0">选择类别</option>
+                            <option value="1">教育教学</option>
+                            <option value="2">休闲读物</option>
+                            <option value="3">经济管理</option>
+                            <option value="4">工业技术</option>
+                            <option value="5">外语教育</option>
+                            <option value="6">文学读物</option>
+                            <option value="7">艺术设计</option>
+                            <option value="8">社会科学</option>
+                            <option value="9">计算机</option>
+                            <option value="10">政治图书</option>
                         </select>
                     </div>
                 </div>
@@ -119,7 +117,7 @@
 
         load();
     });
-    function selectLoad() {
+    /*function selectLoad() {
         var html = "";
         $.ajax({
             url :prefix + "book/type",
@@ -143,14 +141,13 @@
                 });
             }
         });
-    }
+    }*/
     function load() {
-        selectLoad();
         $('#exampleTable')
             .bootstrapTable(
                 {
                     method : 'get', // 服务器数据的请求方式 get or post
-                    url : prefix + "book/manageList", // 服务器数据的加载地址
+                    url : prefix + "book/dataList", // 服务器数据的加载地址
                     //	showRefresh : true,
                     //	showToggle : true,
                     //	showColumns : true,
@@ -167,7 +164,7 @@
                     pageSize : 10, // 如果设置了分页，每页数据条数
                     pageNumber : 1, // 如果设置了分布，首页页码
                     //search : true, // 是否显示搜索框
-                    showColumns : false, // 是否显示内容下拉框（选择显示的列）
+                    //showColumns : false, // 是否显示内容下拉框（选择显示的列）
                     sidePagination : "server", // 设置在哪里进行分页，可选值为"client" 或者 "server"
                     queryParams : function(params) {
                         return {
@@ -175,7 +172,7 @@
                             limit : params.limit,
                             offset : params.offset,
                             // name:$('#searchName').val(),
-                            type : $('#searchName').val(),
+                            type : $('#type').val(),
                         };
                     },
                     // //请求服务器数据时，你可以通过重写参数的方式添加一些额外的参数，例如 toolbar 中的参数 如果
@@ -189,11 +186,11 @@
                             checkbox : true
                         },
                         {
-                            field : 'id',
+                            field : 'bid',
                             title : '编号'
                         },
                         {
-                            field : 'name',
+                            field : 'title',
                             title : '书名'
                         },
                         {
@@ -220,11 +217,11 @@
                             title : '父级编号'
                         },
                         {
-                            field : 'createBy',
+                            field : 'name',
                             title : '创建者'
                         },
                         {
-                            field : 'createDate',
+                            field : 'gtmCreate',
                             title : '创建时间'
                         },
                         {
@@ -252,23 +249,13 @@
                             field : 'id',
                             align : 'center',
                             formatter : function(value, row, index) {
-                                var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=阅读" onclick="edit(\''
-                                    + row.id
-                                    + '\')"><i class="fa fa-edit"></i></a> ';
-                                var d = '<a class="btn btn-success btn-sm ' + s_add_h + '" href="#" title="下载"  mce_href="#" onclick="addD(\''
-                                    + row.id
-                                    + '\')"><i class="fa fa-plus"></i></a> ';
-                                <%
-                                if (user.getRoleId()==1){
-
-                                %>
-                                var f = '<a class="btn btn-warning btn-sm ' + s_remove_h + '" href="#" title="删除"  mce_href="#" onclick="remove(\''
-                                    + row.id
-                                    + '\')"><i class="fa fa-remove"></i></a> ';
-                                <%
-                                }
-                                %>
-                                return e + d +f;
+                                var e = '<a class="btn btn-primary btn-sm ' + s_edit_h + '" href="#" mce_href="#" title=阅读" onclick="read(\''
+                                    + row.bid
+                                    + '\')">阅读</a> ';
+                                var d = '<a class="btn btn-success btn-sm ' + s_add_h + '" href="#" title="下载"  mce_href="#" onclick="download(\''
+                                    + row.bid
+                                    + '\')">下载</a> ';
+                                return e + d;
                             }
                         } ]
                 });

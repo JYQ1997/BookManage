@@ -12,6 +12,7 @@ public class BookDto {
     private Long modified;//最近修改人id
     private String desc;//内容简介
     private String type;//类型
+    private Integer typeCode;//类型Code
     private String tags;//标签
     private String images;//封面
     private String bookUrl;//图书路径
@@ -20,7 +21,7 @@ public class BookDto {
     private Integer commentsNum;//评论数量
     private Integer allowComment;//1:允许评论;2:禁止评论'
     private Integer allowFeed;//允许反馈
-    private Integer status;//状态 1:上架;2:下架'
+    private Integer status;//状态 1:启用;0:禁用；2：申请恢复'
     private String author;//作者
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date gtmCreate;//创建时间
@@ -187,5 +188,13 @@ public class BookDto {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getTypeCode() {
+        return typeCode;
+    }
+
+    public void setTypeCode(Integer typeCode) {
+        this.typeCode = typeCode;
     }
 }

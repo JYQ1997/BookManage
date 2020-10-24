@@ -1,5 +1,6 @@
 package com.bookmanage.dto;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.bookmanage.dao.BaseDao;
 
 import java.util.Date;
@@ -26,15 +27,19 @@ public class UserDto{
     String email;
 
     String mobile;
-
+    //0-禁用；1-启用；2-待审核
     Integer status;
 
     Long userIdCreate;
 
+
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     Date gmtCreate;
 
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     Date gmtModified;
 
+    //1-男；2-女
     Integer sex;
 
     Date birth;

@@ -1,9 +1,13 @@
 package com.bookmanage.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.bookmanage.dto.BookDto;
 import com.bookmanage.dto.UserDto;
+import com.bookmanage.enums.BookTypeEnum;
+import com.bookmanage.response.PageResponse;
 import com.bookmanage.response.ResponseMsg;
 import com.bookmanage.service.UserService;
+import com.bookmanage.util.PageParam;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
@@ -20,6 +24,7 @@ import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -148,6 +153,12 @@ public class UserServlet extends HttpServlet {
         response.getWriter().write(responseMsg.toString());
     }
 
+    /**
+     * 跳转到我的上传页面
+     * @param request
+     * @param response
+     * @throws IOException
+     */
     public void myUpload(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String target="/jspPage/book/myUpload.jsp";
         HttpSession session=request.getSession();
@@ -211,12 +222,192 @@ public class UserServlet extends HttpServlet {
         response.getWriter().write(responseMsg.toString());
     }
 
+    /**
+     * 退出登陆
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ParseException
+     */
     public void logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ParseException {
         HttpSession session = request.getSession();
         if (session.getAttribute("user") != null) {
             session.removeAttribute("user");
         }
         response.sendRedirect(request.getContextPath());
+    }
+
+    /**
+     * 跳转到用户管理页面
+     * @param request
+     * @param response
+     * @throws IOException
+     */
+    public void userManage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String target="/jspPage/user/userManage.jsp";
+        HttpSession session=request.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        log.info(request.getContextPath()+target);
+        response.sendRedirect(request.getContextPath()+target);
+    }
+
+    /**
+     * 用户管理页面获取所有用户数据
+     * @param request
+     * @param response
+     */
+    public void getUserList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        PageParam pageParam=new PageParam();
+        pageParam.setOffset(Integer.valueOf(request.getParameter("offset")));
+        pageParam.setPageSize(Integer.valueOf(request.getParameter("limit")));
+
+        HashMap<String,Object> params=new HashMap<>();
+        if (request.getParameter("status")!=null&&request.getParameter("status")!=""){
+            params.put("status",request.getParameter("status"));
+        }
+        Integer count=userService.selectCountByParam(params);
+        List<UserDto> userDtos = userService.selectByPage(pageParam, params);
+        response.setCharacterEncoding("utf-8");
+        response.setContentType("application/json; charset=utf-8");
+        PageResponse<UserDto> pageResponse=new PageResponse<UserDto>();
+        pageResponse.setRows(userDtos);
+        pageResponse.setTotal(count);
+        response.getWriter().write(pageResponse.toString());
+    }
+
+
+    /**
+     * 更改用户状态
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
+    public void changeStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        Map<String, Object> msg = new HashMap<>();
+        ResponseMsg responseMsg=new ResponseMsg();
+        resp.setCharacterEncoding("utf-8");
+        resp.setContentType("application/json; charset=utf-8");
+        HttpSession session=req.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (req.getParameter("id")!=null&&req.getParameter("id")!=""){
+            UserDto userDto = userService.selectById(Long.valueOf(req.getParameter("id")));
+            if (userDto!=null){
+                Integer status = userDto.getStatus();
+                if (status==1){
+                    userDto.setStatus(0);
+                }
+                else if (status==0){
+                    userDto.setStatus(1);
+                }
+                boolean success = userService.updateStatus(userDto);
+                if (success){
+                    responseMsg.setCode(200);
+                    responseMsg.setMsg("修改成功");
+                }
+                else {
+                    responseMsg.setCode(500);
+                    responseMsg.setMsg("修改失败");
+                }
+            }
+            else {
+                responseMsg.setCode(500);
+                responseMsg.setMsg("用户信息不存在");
+            }
+        }
+        else {
+
+            responseMsg.setCode(500);
+            responseMsg.setMsg("参数缺失");
+        }
+        resp.getWriter().write(responseMsg.toString());
+    }
+    public void setAdmin(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        Map<String, Object> msg = new HashMap<>();
+        ResponseMsg responseMsg=new ResponseMsg();
+        resp.setCharacterEncoding("utf-8");
+        resp.setContentType("application/json; charset=utf-8");
+        HttpSession session=req.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (req.getParameter("id")!=null&&req.getParameter("id")!=""){
+            UserDto userDto = userService.selectById(Long.valueOf(req.getParameter("id")));
+            if (userDto!=null){
+                if (userDto.getRoleId()<=user.getRoleId()){
+                    //权限不允许
+                    responseMsg.setCode(500);
+                    responseMsg.setMsg("权限不足");
+                }else {
+                    userDto.setRoleId(2L);
+                    boolean success = userService.updateRole(userDto);
+                    if (success){
+                        responseMsg.setCode(200);
+                        responseMsg.setMsg("设置成功");
+                    }else {
+                        responseMsg.setCode(500);
+                        responseMsg.setMsg("设置失败");
+                    }
+                }
+            }
+            else {
+                responseMsg.setCode(500);
+                responseMsg.setMsg("用户信息不存在");
+            }
+        }
+        else {
+
+            responseMsg.setCode(500);
+            responseMsg.setMsg("参数缺失");
+        }
+        resp.getWriter().write(responseMsg.toString());
+    }
+
+    /**
+     * 设置成普通用户
+     * @param req
+     * @param resp
+     * @throws IOException
+     */
+    public void setUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+
+        Map<String, Object> msg = new HashMap<>();
+        ResponseMsg responseMsg=new ResponseMsg();
+        resp.setCharacterEncoding("utf-8");
+        resp.setContentType("application/json; charset=utf-8");
+        HttpSession session=req.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        if (req.getParameter("id")!=null&&req.getParameter("id")!=""){
+            UserDto userDto = userService.selectById(Long.valueOf(req.getParameter("id")));
+            if (userDto!=null){
+                if (userDto.getRoleId()<=user.getRoleId()){
+                    //权限不允许
+                    responseMsg.setCode(500);
+                    responseMsg.setMsg("权限不足");
+                }else {
+                    userDto.setRoleId(3L);
+                    boolean success = userService.updateRole(userDto);
+                    if (success){
+                        responseMsg.setCode(200);
+                        responseMsg.setMsg("设置成功");
+                    }else {
+                        responseMsg.setCode(500);
+                        responseMsg.setMsg("设置失败");
+                    }
+                }
+            }
+            else {
+                responseMsg.setCode(500);
+                responseMsg.setMsg("用户信息不存在");
+            }
+        }
+        else {
+
+            responseMsg.setCode(500);
+            responseMsg.setMsg("参数缺失");
+        }
+        resp.getWriter().write(responseMsg.toString());
     }
 
     /**
