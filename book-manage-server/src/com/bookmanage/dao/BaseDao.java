@@ -15,11 +15,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * @Author YongQiang
- * @Date 2020/10/13 15:54
- * @Version 1.0
- */
 public class BaseDao<E> implements Serializable {
 
     private static final Logger log = Logger.getLogger(BaseDao.class);

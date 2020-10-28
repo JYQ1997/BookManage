@@ -1,11 +1,7 @@
 package com.bookmanage.controller;
 
 
-
-import com.bookmanage.dao.MenuDao;
-import com.bookmanage.dto.MenuDto;
 import com.bookmanage.dto.UserDto;
-import com.bookmanage.service.MenuService;
 import com.bookmanage.service.UserService;
 import org.apache.log4j.Logger;
 
@@ -26,8 +22,6 @@ public class IndexServlet extends HttpServlet {
 
 
     private final static Logger log = Logger.getLogger(IndexServlet.class);
-
-    private final static MenuService menuService=new MenuService();
 
     private final static UserService userService=new UserService();
 

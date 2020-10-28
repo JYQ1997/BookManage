@@ -4,11 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 
 import java.util.HashMap;
 
-/**
- * @Author YongQiang
- * @Date 2020/10/14 13:22
- * @Version 1.0
- */
+
 public class ResponseMsg {
 
     private Integer code;

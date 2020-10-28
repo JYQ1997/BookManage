@@ -86,29 +86,6 @@
                         </a>
                     </div>
                 </div>
-                <!--按钮模块-->
-                <div class="outside-login">
-                    <div class="outside-login-tit">
-                        <span>代码链接</span>
-                    </div>
-                    <div class="outside-login-cot">
-                        <a class="outside-login-btn wxoa actived oschina J-btnSwitchLoginType" target="_Blank"
-                           href="https://www.oschina.net/p/bootdo">
-                            <em><i class="fa fa-home"></i></em>
-                            <span>oschina主页</span>
-                        </a>
-                        <a class="outside-login-btn wxoa actived my J-btnSwitchLoginType" target="_Blank"
-                           href="https://gitee.com/lcg0124/bootdo">
-                            <em><i class="fa fa-git-square"></i></em>
-                            <span>码云仓库</span>
-                        </a>
-                        <a class="outside-login-btn wxoa actived git J-btnSwitchLoginType" target="_Blank"
-                           href="https://github.com/lcg0124/bootdo">
-                            <em><i class="fa fa-github"></i></em>
-                            <span>GitHub仓库</span>
-                        </a>
-                    </div>
-                </div>
 
             </form>
         </div>

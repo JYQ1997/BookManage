@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @Author YongQiang
- * @Date 2020/10/13 19:19
- * @Version 1.0
- */
 public class UserService {
 
     private static final UserDao userDao = new UserDao();

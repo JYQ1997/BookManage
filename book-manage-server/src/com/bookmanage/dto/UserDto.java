@@ -5,11 +5,6 @@ import com.bookmanage.dao.BaseDao;
 
 import java.util.Date;
 
-/**
- * @Author YongQiang
- * @Date 2020/10/13 15:34
- * @Version 1.0
- */
 public class UserDto{
 
     Long roleId;

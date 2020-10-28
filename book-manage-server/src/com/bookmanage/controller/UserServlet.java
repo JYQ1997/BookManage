@@ -1,9 +1,6 @@
 package com.bookmanage.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.bookmanage.dto.BookDto;
 import com.bookmanage.dto.UserDto;
-import com.bookmanage.enums.BookTypeEnum;
 import com.bookmanage.response.PageResponse;
 import com.bookmanage.response.ResponseMsg;
 import com.bookmanage.service.UserService;
@@ -11,7 +8,6 @@ import com.bookmanage.util.PageParam;
 import org.apache.log4j.Logger;
 
 import javax.imageio.ImageIO;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +16,6 @@ import javax.servlet.http.HttpSession;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -84,6 +79,16 @@ public class UserServlet extends HttpServlet {
         response.getWriter().write(responseMsg.toString());
     }
 
+    public void konw(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+            IOException {
+        String target="/jspPage/main.jsp";
+        HttpSession session=request.getSession();
+        UserDto user = (UserDto) session.getAttribute("user");
+        log.info(request.getContextPath()+target);
+
+        response.sendRedirect(request.getContextPath()+target);
+
+    }
     /**
      * 打开personal页面层
      * @param request

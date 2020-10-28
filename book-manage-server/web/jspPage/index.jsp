@@ -71,8 +71,8 @@
                         class="nav-label">主页</span> <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level">
-                        <li><a id="index001" class="J_menuItem" href="index_v1.html"
-                               data-index="0" href="/main">了解BootDo</a></li>
+                        <li><a id="index001" class="J_menuItem" href="<%=basePath%>user/konw"
+                              >了解本项目</a></li>
                     </ul>
                 </li>
                 <li>
